@@ -1,0 +1,14 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "id": "fixture-resource",
+      "properties": {
+        "name": "Fixture Connected Systems resource",
+        "description": "A deterministic metadata fixture for Hronir Compose verification.",
+        "uid": "urn:fixture:connected-systems:resource"
+      },
+      "geometry": {"type": "Point", "coordinates": [-73.98, 40.75]}
+    }
+  ]
+}

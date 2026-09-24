@@ -1,0 +1,45 @@
+{
+  "catalog": {
+    "id": "connected-systems",
+    "type": "Collection",
+    "itemType": "record",
+    "title": "Connected Systems metadata",
+    "description": "Materialized Connected Systems metadata managed by Hronir."
+  },
+  "storage": {"class": "transactional", "autoFacetIndexes": true},
+  "queryables": {
+    "sourceId": {"title": "Source", "type": "string", "x-tlon-path": "/properties/hronir/sourceId"},
+    "kind": {"title": "Connected Systems kind", "type": "string", "x-tlon-path": "/properties/connectedSystems/kind"},
+    "title": {"title": "Title", "type": "string", "x-tlon-path": "/properties/title"}
+  },
+  "sortables": {
+    "title": {"type": "string", "x-tlon-path": "/properties/title"},
+    "generatedAt": {"type": "string", "format": "date-time", "x-tlon-path": "/properties/hronir/generatedAt"}
+  },
+  "defaultSortOrder": [{"property": "title", "direction": "asc"}],
+  "facets": {
+    "sources": {"type": "term", "property": "sourceId", "default": true, "bucketCount": 20, "sortedBy": "count", "minOccurs": 1},
+    "kinds": {"type": "term", "property": "kind", "default": true, "bucketCount": 20, "sortedBy": "count", "minOccurs": 1}
+  },
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": ["type", "geometry", "properties"],
+    "properties": {
+      "type": {"const": "Feature"},
+      "geometry": {"type": ["object", "null"]},
+      "properties": {
+        "type": "object",
+        "required": ["type", "title"],
+        "properties": {
+          "type": {"type": "string"},
+          "title": {"type": "string", "minLength": 1},
+          "description": {"type": "string"},
+          "keywords": {"type": "array", "items": {"type": "string"}}
+        },
+        "additionalProperties": true
+      }
+    },
+    "additionalProperties": true
+  }
+}

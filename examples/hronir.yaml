@@ -1,0 +1,29 @@
+apiVersion: hronir.io/v1alpha1
+kind: Harvester
+
+target:
+  url: http://tlon:8080
+  catalogId: connected-systems
+
+state:
+  path: /data/hronir.db
+
+runtime:
+  listenAddress: :8081
+  pollInterval: 1h
+  targetReconciliationInterval: 24h
+  deleteAfterSuccessfulMisses: 2
+  concurrency: 8
+  requestTimeout: 30s
+
+sources:
+  - id: primary
+    url: http://connected-systems:8080
+    resources: {}
+    mqtt:
+      enabled: false
+
+mapping:
+  profile: connected-systems/v1
+  overlays: {}
+  functions: []

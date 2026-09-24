@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v6
+        with:
+          go-version: '1.27.x'
+      - run: gofmt -d $(find . -name '*.go' -not -path './vendor/*') | (! grep .)
+      - run: go vet ./...
+      - run: go test -race ./...
+      - run: git diff --check
+      - run: go run ./cmd/hronir config validate -c examples/hronir.yaml
+      - run: go run ./cmd/hronir catalog render -c examples/hronir.yaml --format tlon > /tmp/catalog.json
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - run: docker buildx build --platform linux/amd64 --load -t hronir:ci-amd64 .
+      - run: docker buildx build --platform linux/arm64 --load -t hronir:ci-arm64 .

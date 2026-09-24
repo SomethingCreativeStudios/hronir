@@ -1,0 +1,12 @@
+{
+  "kind": "systems",
+  "id": "weather-station-1",
+  "uid": "urn:example:system:weather-station-1",
+  "canonicalUrl": "https://connected-systems.example/systems/weather-station-1",
+  "name": "Weather station 1",
+  "description": "A field weather station.",
+  "geometry": {"type": "Point", "coordinates": [-73.98, 40.75]},
+  "validTime": ["2025-01-01T00:00:00Z", ".."],
+  "keywords": ["weather", "station"],
+  "metadata": {"region": "north"}
+}

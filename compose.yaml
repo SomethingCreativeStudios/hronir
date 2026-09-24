@@ -1,0 +1,94 @@
+services:
+  database:
+    image: timescale/timescaledb-ha:pg18.4-ts2.29.2-oss
+    environment:
+      POSTGRES_DB: tlon
+      POSTGRES_USER: tlon
+      POSTGRES_PASSWORD: tlon
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tlon -d tlon"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    volumes:
+      - hronir-tlon-data:/home/postgres/pgdata
+
+  migrate:
+    build:
+      context: ../tlon
+    command: ["migrate", "up"]
+    environment: &tlon-environment
+      TLON_DATABASE_URL: postgres://tlon:tlon@database:5432/tlon?sslmode=disable
+      TLON_PUBLIC_URL: http://tlon:8080
+      TLON_CURSOR_SECRET: local-development-cursor-secret-change-me
+      TLON_AUTH_MODE: external
+    depends_on:
+      database:
+        condition: service_healthy
+
+  tlon:
+    build:
+      context: ../tlon
+    environment: *tlon-environment
+    depends_on:
+      database:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "/tlon", "healthcheck"]
+      interval: 5s
+      timeout: 4s
+      retries: 20
+    ports:
+      - "${TLON_HTTP_PORT:-8080}:8080"
+
+  catalog:
+    build:
+      context: ../tlon
+    command: ["catalog", "apply", "/catalog/tlon-connected-systems.json"]
+    environment: *tlon-environment
+    volumes:
+      - ./examples/tlon-connected-systems.json:/catalog/tlon-connected-systems.json:ro
+    depends_on:
+      tlon:
+        condition: service_healthy
+
+  mosquitto:
+    image: eclipse-mosquitto:2
+
+  connected-systems:
+    image: nginx:1.29-alpine
+    volumes:
+      - ./examples/fixture/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./examples/fixture/collection.json:/usr/share/nginx/html/collection.json:ro
+    depends_on:
+      mosquitto:
+        condition: service_started
+
+  state-init:
+    image: busybox:1.37
+    user: "0"
+    command: ["sh", "-c", "chown 65532:65532 /data"]
+    volumes:
+      - hronir-state:/data
+
+  hronir:
+    build: .
+    command: ["run", "--config", "/config/hronir.yaml"]
+    volumes:
+      - ./examples/hronir.compose.yaml:/config/hronir.yaml:ro
+      - hronir-state:/data
+    depends_on:
+      catalog:
+        condition: service_completed_successfully
+      connected-systems:
+        condition: service_started
+      state-init:
+        condition: service_completed_successfully
+    ports:
+      - "${HRONIR_HTTP_PORT:-8081}:8081"
+
+volumes:
+  hronir-tlon-data:
+  hronir-state:

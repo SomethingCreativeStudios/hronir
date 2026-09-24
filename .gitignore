@@ -1,0 +1,9 @@
+/bin/
+/dist/
+/.cache/
+/.DS_Store
+*.db
+*.db-shm
+*.db-wal
+*.lock
+coverage.out
