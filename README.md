@@ -1,8 +1,21 @@
-# Hronir
+# Hrönir
 
-Hronir materializes bounded OGC API Connected Systems metadata into a canonical
-OGC API Records collection. It is a standalone Go service: it does not proxy a
-Connected Systems API and never accesses the Records database directly.
+<img src="hronir-icon.svg" align="left" width="80" height="85" hspace="20" vspace="10" alt="Hrönir icon">
+
+*hrönir (pronounced "HRUH-neer"), from Borges's "Tlön, Uqbar, Orbis Tertius": objects produced by the act of searching for them, never quite identical to the original, shaped by the finder's expectations.*
+
+Hrönir is a harvester written in Go. It crawls OGC API Connected Systems servers, transforms their resources into OGC API Records, and delivers them to a catalog such as [tlon](../tlon).
+
+<br clear="left">
+
+
+## Why
+
+Getting Connected Systems resources into a catalog takes more than copying them. Systems arrive as GeoJSON or SensorML, vocabularies differ between deployments, and a useful discovery record needs titles, keywords, themes, and extents that the source often only implies. Hrönir produces a derived representation shaped for discovery rather than a mirror of the source, which is what the name means.
+
+Because it only speaks the CS API, Hrönir works against any conformant server, including servers you don't control and could never get database access to.
+
+# What is it, really?
 
 The initial profile ingests Systems (including subsystems), Deployments,
 Procedures, Sampling Features, Properties, Datastreams, and Control Streams.

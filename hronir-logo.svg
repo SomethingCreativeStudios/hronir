@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96">
+  <circle cx="36" cy="36" r="19" fill="none" stroke="#14161F" stroke-width="6"/>
+  <path d="M 62.6 74.3 A 20 20 0 1 1 74.3 62.6" fill="none" stroke="#C99549" stroke-width="6" stroke-linecap="round"/>
+  <text x="104" y="63" font-family="Iowan Old Style, Palatino Linotype, Palatino, Georgia, serif" font-size="46" letter-spacing="1.5" fill="#14161F">hrönir</text>
+</svg>
